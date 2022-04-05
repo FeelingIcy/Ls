@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LsTests {
     public void testOutput(boolean l, boolean h, boolean r, String expected) throws IOException {
-        String dir = "C:\\Users\\SVETLANA\\IdeaProjects\\Ls\\files";
+        String dir = "files";
         String o = "output.txt";
         Main.start(l, h, r, o, dir);
         File output = new File(o);
