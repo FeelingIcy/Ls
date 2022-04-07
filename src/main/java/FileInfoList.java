@@ -1,5 +1,4 @@
 import java.io.File;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +17,7 @@ public class FileInfoList {
     }
 
     public String toString(Args args) {
+        if (files.isEmpty()) return "Директория не содержит ни одного файла";
         if (args.reverse) Collections.reverse(files);
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < files.size(); i++) {
