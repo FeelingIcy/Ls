@@ -9,8 +9,9 @@ public class LsTests {
     public void testOutput(boolean l, boolean h, boolean r, String expected) throws IOException {
         String dir = "files";
         String o = "output.txt";
-        Main.start(l, h, r, o, dir);
-        File output = new File(o);
+        Args args = new Args(l, h, r, o, dir);
+        Main.start(args);
+        File output = new File(args.out);
         assertEquals(Files.readString(output.toPath()), expected);
         output.delete();
     }
@@ -36,19 +37,19 @@ public class LsTests {
     @Test
     public void testR() throws IOException {
         testOutput(false, false, true,
-                "Vopros_9.docx   \n" +
-                        "Vopros_3.docx   \n" +
-                        "Vopros_21.docx   \n" +
-                        "Vopros_10.docx   ");
+                "Vopros_9.docx\n" +
+                        "Vopros_3.docx\n" +
+                        "Vopros_21.docx\n" +
+                        "Vopros_10.docx");
     }
 
     @Test
     public void testWithoutArguments() throws IOException {
         testOutput(false, false, false,
-                "Vopros_10.docx   \n" +
-                        "Vopros_21.docx   \n" +
-                        "Vopros_3.docx   \n" +
-                        "Vopros_9.docx   ");
+                "Vopros_10.docx\n" +
+                        "Vopros_21.docx\n" +
+                        "Vopros_3.docx\n" +
+                        "Vopros_9.docx");
     }
 
     @Test

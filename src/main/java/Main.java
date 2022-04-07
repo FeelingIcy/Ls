@@ -7,25 +7,17 @@ import org.kohsuke.args4j.*;
 public class Main {
     public static void main(String[] args) throws IOException, CmdLineException {
         Args arguments = new Args(args);
-        boolean l = arguments.longFormat;
-        boolean h = arguments.humanReadable;
-        boolean r = arguments.reverse;
-        String o = arguments.out;
-        String dir = arguments.dir;
-        start(l, h, r, o, dir);
+        start(arguments);
     }
 
-    public static void start(boolean l, boolean h, boolean r, String o, String dir) throws IOException {
-        FileInfoList listOfFiles = new FileInfoList(dir);
-        if (!l && h) throw new IllegalArgumentException();
-        if (l) listOfFiles.toLongFormat();
-        if (h) listOfFiles.toHumanReadable();
-        if (r) listOfFiles.reverse();
-        if (o == null) {
+    public static void start(Args args) throws IOException {
+        FileInfoList listOfFiles = new FileInfoList(args.dir);
+        if (!args.longFormat && args.humanReadable) throw new IllegalArgumentException();
+        if (args.out == null) {
             System.out.println(listOfFiles);
         } else {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(o));
-            writer.write(listOfFiles.toString());
+            BufferedWriter writer = new BufferedWriter(new FileWriter(args.out));
+            writer.write(listOfFiles.toString(args));
             writer.close();
         }
     }
@@ -53,5 +45,13 @@ class Args {
         if (dir == null) {
             dir = System.getProperty("user.dir");
         }
+    }
+
+    Args(boolean l, boolean h, boolean r, String o, String dir) {
+        longFormat = l;
+        humanReadable = h;
+        reverse = r;
+        out = o;
+        this.dir = dir;
     }
 }

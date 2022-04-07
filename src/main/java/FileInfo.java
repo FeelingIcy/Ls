@@ -2,15 +2,14 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 
 public class FileInfo {
-    File file;
-    String name;
-    String rights = "";
-    String size = "";
-    String time = "";
+    private final File file;
+    private final String name;
 
-    @Override
-    public String toString() {
-        return name + " " + rights + " " + size + " " + time;
+    public String toString(Args args) {
+        String result = name;
+        if (args.longFormat && !args.humanReadable) result += toLongFormat();
+        if (args.longFormat && args.humanReadable) result += toHumanReadable();
+        return result;
     }
 
     public FileInfo(File fl) {
@@ -18,47 +17,56 @@ public class FileInfo {
         name = file.getName();
     }
 
-    public void toLongFormat() {
-        if (file.canRead()) rights += 1;
-        else rights += 0;
-        if (file.canWrite()) rights += 1;
-        else rights += 0;
-        if (file.canExecute()) rights += 1;
-        else rights += 0;
+    public String toLongFormat() {
+        String result = " ";
+        if (file.canRead()) result += 1;
+        else result += 0;
+        if (file.canWrite()) result += 1;
+        else result += 0;
+        if (file.canExecute()) result += 1;
+        else result += 0;
+
+        result += " " + file.length();
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        time = sdf.format(file.lastModified());
+        result += " " + sdf.format(file.lastModified());
 
-        size = String.valueOf(file.length());
+        return result;
     }
 
-    public void toHumanReadable() {
-        if (file.canRead()) rights = "r";
-        else rights = "-";
-        if (file.canWrite()) rights += "w";
-        else rights += "-";
-        if (file.canExecute()) rights += "x";
-        else rights += "-";
+    public String toHumanReadable() {
+        String result = " ";
+        if (file.canRead()) result += "r";
+        else result += "-";
+        if (file.canWrite()) result += "w";
+        else result += "-";
+        if (file.canExecute()) result += "x ";
+        else result += "- ";
 
-        double longSize = Double.parseDouble(size);
-        String end = "B";
+        double longSize = (double) file.length();
+        String metricUnits = "B";
         while (longSize / 1024 > 1) {
             longSize /= 1024;
-            switch (end) {
+            switch (metricUnits) {
                 case "B":
-                    end = "KB";
+                    metricUnits = "KB";
                     break;
                 case "KB":
-                    end = "MB";
+                    metricUnits = "MB";
                     break;
                 case "MB":
-                    end = "GB";
+                    metricUnits = "GB";
                     break;
             }
         }
-        String result;
-        if (end.equals("B")) result = String.format("%.0f", longSize);
-        else result = String.format("%.1f", longSize);
-        size = result + end;
+
+        if (metricUnits.equals("B")) result += String.format("%.0f", longSize);
+        else result += String.format("%.1f", longSize);
+        result += metricUnits;
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        result += " " + sdf.format(file.lastModified());
+
+        return result;
     }
 }
