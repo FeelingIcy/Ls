@@ -1,8 +1,7 @@
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
 
 public class FileInfoList {
     private final List<FileInfo> files = new ArrayList<>();
@@ -16,14 +15,19 @@ public class FileInfoList {
         } else files.add(new FileInfo(dir));
     }
 
-    public String toString(Args args) {
-        if (files.isEmpty()) return "Директория не содержит ни одного файла";
+    public void output(Args args) throws IOException {
         if (args.reverse) Collections.reverse(files);
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < files.size(); i++) {
-            result.append(files.get(i).toString(args));
-            if (i < files.size() - 1) result.append("\n");
+        if (args.out == null) {
+            for (FileInfo file : files) {
+                System.out.println(file.toString(args));
+            }
+        } else {
+            FileWriter writer = new FileWriter(args.out);
+            for (int i = 0; i < files.size(); i++) {
+                writer.write(files.get(i).toString(args));
+                if (i < files.size() - 1) writer.write(System.getProperty("line.separator"));
+            }
+            writer.close();
         }
-        return result.toString();
     }
 }

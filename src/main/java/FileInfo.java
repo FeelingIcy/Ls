@@ -57,6 +57,9 @@ public class FileInfo {
                 case "MB":
                     metricUnits = "GB";
                     break;
+                case "GB":
+                    metricUnits = "TB";
+                    break;
             }
         }
 
